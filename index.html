@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ઇલેક્ટ્રોમેગ્નેટ સિમ્યુલેટર – ITI ગુજરાતી</title>
+<meta name="description" content="ગુજરાતી ઇલેક્ટ્રોમેગ્નેટ સિમ્યુલેટર: સિદ્ધાંત, લાઇવ પ્રયોગ, ટેસ્ટ, ફોલ્ટ ફાઇન્ડિંગ, MCQ અને થિયરી – ITI માટે.">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E8ECEF;--panel:#FFFFFF;--sunk:#F2F5F7;--ink:#17222B;--muted:#596875;--line:#D3DBE1;--acc:#0B7A75;--acc2:#075E5A;
+ --cu:#C87533;--red:#D7262E;--blue:#1E5BD8;--ok:#13915A;--bad:#D7262E;--warn:#B7791F;--warnbg:#FFF4D6;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root{--bg:#0F151A;--panel:#172028;--sunk:#111A20;--ink:#E4EBF0;--muted:#93A1AD;--line:#26333D;--acc:#2BB3AA;--acc2:#1C8C85;--warnbg:#3A2E0E}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Vadodara","Noto Sans Gujarati",system-ui,sans-serif;font-size:16.5px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:920px;margin:0 auto;padding:10px 14px 40px;display:grid;gap:12px}
+h1{font-size:clamp(24px,6vw,34px);line-height:1.15;margin:8px 0 0}
+h1 small{display:block;font-size:.48em;color:var(--acc);font-weight:600;margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+#stageBox{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#F7F4EC}
+@media (prefers-color-scheme:dark){#stageBox{background:#1B242C}}
+#cv{display:block;width:100%;height:340px;touch-action:manipulation}
+.badge{position:absolute;left:10px;top:10px;background:rgba(15,21,26,.82);color:#fff;font-size:13px;font-weight:700;padding:5px 10px;border-radius:10px;pointer-events:none}
+.badge.fault{background:var(--bad)}
+.ro{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.ro div{background:var(--sunk);border-radius:10px;padding:6px 4px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;line-height:1.25}
+.ro b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+@media (max-width:560px){.ro{grid-template-columns:repeat(3,1fr)}}
+.ctl{display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sw{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:12px;padding:10px 18px;background:var(--ink);color:var(--bg);cursor:pointer;min-width:150px}
+.sw.on{background:var(--ok);color:#fff}
+.btn{font:inherit;font-weight:700;font-size:15px;border:1.5px solid var(--line);background:var(--sunk);color:var(--ink);border-radius:10px;padding:7px 12px;cursor:pointer}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.on{border-color:var(--acc);background:var(--acc);color:#fff}
+.btn:disabled,.sw:disabled,input:disabled{opacity:.45;cursor:not-allowed}
+.sl{display:grid;grid-template-columns:118px 1fr 64px;gap:8px;align-items:center;font-weight:700;font-size:15px}
+.sl input{width:100%;accent-color:var(--acc)}
+.sl output{font-variant-numeric:tabular-nums;text-align:right}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.tabs button{flex:none;font:inherit;font-weight:700;font-size:15px;padding:8px 14px;border-radius:20px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+#panel h2{font-size:21px;margin:4px 0 8px;line-height:1.25}
+#panel h3{font-size:18px;margin:14px 0 6px}
+#panel p{margin:6px 0}
+.note{font-size:14px;color:var(--muted)}
+.key{border-left:4px solid var(--acc);background:var(--sunk);border-radius:0 10px 10px 0;padding:8px 12px;margin:8px 0}
+.formula{font-weight:700;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0;overflow-x:auto}
+.warnb{background:var(--warnbg);border:1px solid var(--warn);border-radius:12px;padding:8px 12px;margin:8px 0}
+.tasks{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}
+.tasks li{background:var(--sunk);border-radius:10px;padding:7px 10px;display:flex;gap:8px;align-items:flex-start}
+.tasks li i{font-style:normal;flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:13px}
+.tasks li.done i{background:var(--ok);border-color:var(--ok);color:#fff}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
+.test{background:var(--sunk);border-radius:12px;padding:10px;display:grid;gap:6px;align-content:start}
+.test b.t{font-size:16px}
+.test .how{font-size:14px;color:var(--muted)}
+.read{font-weight:700;border-radius:8px;padding:6px 8px;background:var(--panel);border:1px solid var(--line);min-height:34px}
+.read.ok{border-color:var(--ok);color:var(--ok)}.read.bad{border-color:var(--bad);color:var(--bad)}
+.log{background:var(--sunk);border-radius:12px;padding:8px 10px;font-size:14.5px;max-height:240px;overflow:auto}
+.log div{border-bottom:1px dashed var(--line);padding:4px 0}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px;margin:8px 0}
+.opts button{font:inherit;font-size:15px;font-weight:600;text-align:left;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 10px;border-radius:10px;cursor:pointer}
+.opts button.r{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--panel))}
+.opts button.w{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,var(--panel))}
+.result{border-radius:12px;padding:10px 12px;font-weight:600;margin:8px 0}
+.result.ok{border:1.5px solid var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--panel))}
+.result.bad{border:1.5px solid var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--panel))}
+.score{display:flex;gap:14px;flex-wrap:wrap;font-weight:700;color:var(--muted);font-size:14.5px}
+.score b{color:var(--ink)}
+.qq{background:var(--sunk);border-radius:12px;padding:10px 12px;margin:8px 0}
+.qq p.q{font-weight:700;margin:0 0 6px}
+.qq svg{display:block;width:100%;max-width:300px;height:auto;margin:4px 0 6px;background:var(--panel);border-radius:10px}
+.why{font-size:14.5px;color:var(--muted);margin-top:4px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-size:13px}
+.tbl{overflow-x:auto}
+ul.l,ol.l{padding-left:20px;margin:6px 0}
+ul.l li,ol.l li{margin:3px 0}
+.hide{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:14px;margin-top:10px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>ઇલેક્ટ્રોમેગ્નેટ સિમ્યુલેટર<small>સિદ્ધાંત • લાઇવ પ્રયોગ • ટેસ્ટ • ફોલ્ટ ફાઇન્ડિંગ • MCQ • થિયરી</small></h1>
+
+<div id="stageBox"><canvas id="cv" aria-label="ઇલેક્ટ્રોમેગ્નેટ સર્કિટ, કોઇલ, ચુંબકીય ક્ષેત્ર, કંપાસ અને પિન"></canvas><div class="badge" id="badge">સ્વિચ બંધ</div></div>
+
+<div class="ro" aria-live="polite">
+ <div><b id="oV">12.0 V</b>વોલ્ટેજ</div>
+ <div><b id="oI">0.00 A</b>કરંટ</div>
+ <div><b id="oR">6.0 Ω</b>કોઇલ રેઝિ.</div>
+ <div><b id="oAT">0</b>એમ્પિયર-ટર્ન</div>
+ <div><b id="oP">0 / 20</b>ઉપાડેલી પિન</div>
+ <div><b id="oT">30°C</b>કોઇલ તાપમાન</div>
+</div>
+
+<div class="card ctl" id="ctl">
+ <div class="row"><button class="sw" id="sw">⏻ સ્વિચ ચાલુ કરો</button><button class="btn" id="rev">⇄ કરંટ ઉલટાવો</button></div>
+ <div class="sl"><span>વોલ્ટેજ (V)</span><input type="range" id="sV" min="0" max="12" step="0.5" value="12"><output id="lV">12.0</output></div>
+ <div class="sl"><span>આંટા (N)</span><input type="range" id="sN" min="50" max="500" step="50" value="300"><output id="lN">300</output></div>
+ <div class="row" id="cores"><span style="font-weight:700">કોર:</span></div>
+</div>
+
+<nav class="tabs" id="tabs">
+ <button data-t="sim" class="on">🧪 પ્રયોગ</button><button data-t="prin">💡 સિદ્ધાંત</button><button data-t="test">🔧 ટેસ્ટ</button>
+ <button data-t="fault">🩺 ફોલ્ટ ફાઇન્ડિંગ</button><button data-t="mcq">📝 MCQ</button><button data-t="theory">📘 થિયરી</button>
+</nav>
+<section class="card" id="panel"></section>
+<footer>Government ITI Maninagar – Mechanic Diesel</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const CORES={
+ air:{n:'હવા (કોર નહીં)',mu:1,mag:false,res:0,col:null},
+ iron:{n:'સોફ્ટ આયર્ન',mu:60,mag:true,res:0.02,col:'#8C969E'},
+ steel:{n:'હાર્ડ સ્ટીલ',mu:40,mag:true,res:0.35,col:'#4F5A66'},
+ brass:{n:'પિત્તળ',mu:1,mag:false,res:0,col:'#C9A227'}
+};
+const S={on:false,V:12,N:300,core:'iron',rev:false,tab:'sim',fault:null,temp:30,resid:0,lastStr:0,flick:true,pinsShown:0,phase:0,tasks:{}};
+
+/* ---------- physics ---------- */
+function eff(forceOn){
+  let V=S.V,N=S.N,core=S.core,R=0.02*S.N,IR=200,Neff=S.N;const f=S.fault;
+  if(f){V=12;N=300;R=6;Neff=300;core=f==='brass'?'brass':f==='residual'?'steel':'iron';
+    if(f==='open')R=Infinity;if(f==='short'){R=1.5;Neff=30}if(f==='weak')V=3.5;if(f==='loose')R=S.flick?6:Infinity;if(f==='leak')IR=0.05}
+  const on=forceOn||S.on;const I=on&&isFinite(R)?V/R:0;
+  const c=CORES[core];const raw=c.mu*Neff*I/1000;const str=c.mag?40*Math.tanh(raw/40):raw;
+  return {V,N,Neff,R,I,core,c,str,IR,AT:Math.round(N*I)};
+}
+function pinsFor(str){return Math.max(0,Math.min(20,Math.floor(str/2)))}
+function polarityRight(){return !S.rev} /* true => right end N */
+
+/* ---------- canvas ---------- */
+const cv=$('cv');let W=0,H=340,ctx;
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2.5);W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0)}
+new ResizeObserver(fit).observe(cv);fit();
+const dark=()=>matchMedia('(prefers-color-scheme: dark)').matches;
+function arrowHead(x,y,ang,s,col){ctx.save();ctx.translate(x,y);ctx.rotate(ang);ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(s,0);ctx.lineTo(-s*.8,-s*.7);ctx.lineTo(-s*.8,s*.7);ctx.closePath();ctx.fill();ctx.restore()}
+function draw(e,dt){
+  const ink=dark()?'#E4EBF0':'#17222B',muted=dark()?'#93A1AD':'#596875';
+  ctx.clearRect(0,0,W,H);
+  const cx=W*0.47,cy=118,Lc=Math.min(W*0.5,300),hc=40,x0=cx-Lc/2,x1=cx+Lc/2;
+  const strong=Math.max(0,e.str);const rightN=polarityRight();
+  /* field lines */
+  const k=Math.min(8,Math.round(strong/4.5)+(strong>0.3?1:0));
+  S.phase+=dt*(0.6+strong/12);
+  for(let j=1;j<=k;j++){const rx=Lc/2+14+j*13,ry=hc/2+8+j*14;const a=Math.max(.18,.75-j*.07);
+    ctx.strokeStyle=`rgba(30,91,216,${a})`;ctx.lineWidth=1.6;ctx.setLineDash([7,6]);ctx.lineDashOffset=(rightN?-1:1)*S.phase*30;
+    ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    /* arrows on top & bottom outside: field goes N->S outside */
+    const dir=rightN?Math.PI:0;arrowHead(cx,cy-ry,dir,5,`rgba(30,91,216,${a+.1})`);arrowHead(cx,cy+ry,dir,5,`rgba(30,91,216,${a+.1})`)}
+  /* core */
+  const c=e.c;
+  if(c.col){const g=ctx.createLinearGradient(0,cy-hc/2,0,cy+hc/2);g.addColorStop(0,c.col);g.addColorStop(.45,'#ffffff55');g.addColorStop(1,c.col);
+    ctx.fillStyle=c.col;ctx.fillRect(x0-18,cy-hc/2,Lc+36,hc);ctx.fillStyle=g;ctx.fillRect(x0-18,cy-hc/2,Lc+36,hc);ctx.strokeStyle='#333a';ctx.strokeRect(x0-18,cy-hc/2,Lc+36,hc)}
+  else{ctx.strokeStyle=muted;ctx.setLineDash([4,4]);ctx.strokeRect(x0-18,cy-hc/2,Lc+36,hc);ctx.setLineDash([]);ctx.fillStyle='#E8DCC055';ctx.fillRect(x0-18,cy-hc/2,Lc+36,hc)}
+  /* coil */
+  const turns=Math.max(6,Math.round(e.N/20));const hot=Math.min(1,Math.max(0,(S.temp-50)/50));
+  for(let i=0;i<turns;i++){const x=x0+8+(Lc-16)*i/(turns-1);
+    ctx.strokeStyle=hot>0?`rgb(${200+55*hot|0},${117-60*hot|0},${51-30*hot|0})`:'#C87533';ctx.lineWidth=3.2;
+    ctx.beginPath();ctx.ellipse(x,cy,4,hc/2+5,0,0,Math.PI*2);ctx.stroke()}
+  if(hot>0.15){ctx.fillStyle=`rgba(255,80,20,${hot*.25})`;ctx.fillRect(x0,cy-hc/2-8,Lc,hc+16)}
+  /* current arrows on coil front */
+  if(e.I>0){const step=Math.max(2,Math.floor(turns/5));for(let i=1;i<turns-1;i+=step){const x=x0+8+(Lc-16)*i/(turns-1);arrowHead(x+4,cy+(rightN?6:-6),rightN?Math.PI/2:-Math.PI/2,5,'#D7262E')}}
+  /* poles */
+  if(strong>0.3){const pl=(x,isN)=>{ctx.fillStyle=isN?'#D7262E':'#1E5BD8';ctx.beginPath();ctx.roundRect?ctx.roundRect(x-14,cy-12,28,24,6):ctx.rect(x-14,cy-12,28,24);ctx.fill();ctx.fillStyle='#fff';ctx.font='700 15px "Hind Vadodara",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(isN?'N':'S',x,cy+1)};
+    pl(x0-32,!rightN);pl(x1+32,rightN)}
+  /* compass */
+  const kx=Math.min(W-34,x1+82),ky=cy;ctx.fillStyle=dark()?'#0F151A':'#fff';ctx.strokeStyle=muted;ctx.lineWidth=2;ctx.beginPath();ctx.arc(kx,ky,24,0,Math.PI*2);ctx.fill();ctx.stroke();
+  let ang=-Math.PI/2+Math.sin(S.phase*0.7)*0.05; /* earth north (up) */
+  if(strong>0.3){const t=Math.min(1,strong/6);const target=rightN?0:Math.PI;ang=ang+(target-ang)*t}
+  S.needle=S.needle===undefined?ang:S.needle+(ang-S.needle)*Math.min(1,dt*6);
+  ctx.save();ctx.translate(kx,ky);ctx.rotate(S.needle);ctx.fillStyle='#D7262E';ctx.beginPath();ctx.moveTo(20,0);ctx.lineTo(0,-5);ctx.lineTo(0,5);ctx.fill();ctx.fillStyle='#8a949c';ctx.beginPath();ctx.moveTo(-20,0);ctx.lineTo(0,-5);ctx.lineTo(0,5);ctx.fill();ctx.restore();
+  ctx.fillStyle=muted;ctx.font='600 11px "Hind Vadodara",sans-serif';ctx.textAlign='center';ctx.fillText('કંપાસ',kx,ky+38);
+  /* pins */
+  const target=S.on?pinsFor(e.str):pinsFor(S.resid);
+  const trayY=cy+hc/2+96;ctx.fillStyle=dark()?'#26333D':'#D9D2C0';ctx.fillRect(cx-Lc*0.36,trayY,Lc*0.72,8);
+  if(!S.pins)S.pins=Array.from({length:20},()=>({t:0}));
+  let shown=0;const PL=17,core0=x0-18,core1=x1+18;
+  for(let i=0;i<20;i++){const p=S.pins[i];const want=i<target?1:0;
+    const sp=want?2.2:4;p.t+= (want-p.t)>0?Math.min(want-p.t,dt*sp*(1-i*0.02)):Math.max(want-p.t,-dt*sp);
+    if(p.t>0.98)shown++;
+    /* tray position (lying) */
+    const col=i%10,rowi=Math.floor(i/10);const tx=cx-Lc*0.32+col*(Lc*0.64/10),ty=trayY-4-rowi*5;
+    /* attached position: chains hanging at the two pole ends */
+    const left=i%2===0,s=Math.floor(i/2),c=s%3,r=Math.floor(s/3);
+    const ax=left?core0+5+c*9:core1-5-c*9,ay=cy+hc/2+1+r*(PL+1);
+    const k=p.t<1?p.t*p.t*(3-2*p.t):1;
+    const x=tx+(ax-tx)*k,y=ty+(ay-ty)*k;const sw=Math.sin(S.phase*2+i)*0.06*k;
+    const ang=(1-k)*(-0.12)+k*(Math.PI/2+sw);
+    ctx.save();ctx.translate(x,y);ctx.rotate(ang);
+    ctx.strokeStyle=dark()?'#B8C2CA':'#4A535B';ctx.lineWidth=2.6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(PL,0);ctx.stroke();
+    ctx.fillStyle=dark()?'#D7DEE4':'#2F363C';ctx.beginPath();ctx.arc(0,0,3,0,7);ctx.fill();ctx.restore()}
+  S.pinsShown=shown;
+  ctx.fillStyle=muted;ctx.font='600 11px "Hind Vadodara",sans-serif';ctx.textAlign='center';ctx.fillText('લોખંડની પિન',cx,trayY+22);
+  /* circuit: battery, switch, ammeter */
+  const by=H-50,bx=Math.max(46,W*0.1),sx=W*0.36,ax=W*0.62;
+  const wireCol=e.I>0?'#C87533':(dark()?'#4a5763':'#9aa3aa');ctx.strokeStyle=wireCol;ctx.lineWidth=2.4;
+  const path=[[x0+34,cy+hc/2+6],[x0+34,cy+hc/2+40],[bx,cy+hc/2+40],[bx,by-14]];
+  const path2=[[bx,by+14],[bx,H-14],[sx-22,H-14]];const path3=[[sx+22,H-14],[ax-18,H-14]];const path4=[[ax+18,H-14],[x1+48,H-14],[x1+48,cy+hc/2+40],[x1-34,cy+hc/2+40],[x1-34,cy+hc/2+6]];
+  [path,path2,path3,path4].forEach(p=>{ctx.beginPath();p.forEach((q,i)=>i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]));ctx.stroke()});
+  /* moving electrons-style dots (conventional current) */
+  if(e.I>0){const all=[].concat(path4.slice().reverse(),[]);const segs=[path,path2,path3,path4];ctx.fillStyle='#FFB020';
+    const sp=(S.phase*40*Math.min(2,e.I/2))%24;segs.forEach(p=>{for(let i=0;i<p.length-1;i++){const [ax1,ay1]=p[i],[ax2,ay2]=p[i+1];const L=Math.hypot(ax2-ax1,ay2-ay1);for(let d=sp;d<L;d+=24){const t=d/L;ctx.beginPath();ctx.arc(ax1+(ax2-ax1)*t,ay1+(ay2-ay1)*t,2.4,0,7);ctx.fill()}}})}
+  /* battery */
+  ctx.fillStyle=dark()?'#26333D':'#2E3A44';ctx.fillRect(bx-24,by-14,48,28);ctx.fillStyle='#E8B430';ctx.fillRect(bx-24,by-14,10,28);
+  ctx.fillStyle='#fff';ctx.font='700 12px "Hind Vadodara",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e.V.toFixed(1)+'V',bx+5,by+1);
+  /* switch */
+  ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.arc(sx-22,H-14,3,0,7);ctx.arc(sx+22,H-14,3,0,7);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sx-22,H-14);S.on?ctx.lineTo(sx+22,H-14):ctx.lineTo(sx+16,H-34);ctx.stroke();
+  ctx.fillStyle=muted;ctx.font='600 11px "Hind Vadodara",sans-serif';ctx.fillText('સ્વિચ',sx,H-42);
+  /* ammeter */
+  ctx.fillStyle=dark()?'#0F151A':'#fff';ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.beginPath();ctx.arc(ax,H-14,17,0,7);ctx.fill();ctx.stroke();ctx.fillStyle=ink;ctx.font='700 14px sans-serif';ctx.fillText('A',ax,H-13);
+  ctx.fillStyle=muted;ctx.font='600 11px "Hind Vadodara",sans-serif';ctx.fillText(e.I.toFixed(2)+' A',ax,H-40);
+  ctx.textBaseline='alphabetic';
+}
+
+/* ---------- UI ---------- */
+function setCore(k){S.core=k;document.querySelectorAll('#cores .btn').forEach(b=>b.classList.toggle('on',b.dataset.k===k));if(k==='air')mark('air');if(k==='steel')mark('steel')}
+Object.entries(CORES).forEach(([k,c])=>{const b=document.createElement('button');b.className='btn'+(k===S.core?' on':'');b.dataset.k=k;b.textContent=c.n;b.onclick=()=>{if(S.fault)return;setCore(k)};$('cores').appendChild(b)});
+$('sw').onclick=()=>{toggle()};
+function toggle(){const e=eff();if(S.on){S.lastStr=e.str;S.resid=e.str*e.c.res;if(S.resid>2&&!S.fault)mark('resid')}else{S.resid=0}S.on=!S.on;if(S.on)mark('on')}
+$('rev').onclick=()=>{if(S.fault)return;S.rev=!S.rev;if(S.on)mark('rev')};
+$('sV').oninput=e=>{S.V=+e.target.value;$('lV').textContent=S.V.toFixed(1)};
+$('sN').oninput=e=>{S.N=+e.target.value;$('lN').textContent=S.N;if(S.on&&S.N>=450)mark('turns')};
+function lockUI(l){['sV','sN','rev'].forEach(id=>$(id).disabled=l);document.querySelectorAll('#cores .btn').forEach(b=>b.disabled=l)}
+
+let fT=0;
+function updateRO(e){
+  $('oV').textContent=e.V.toFixed(1)+' V';$('oI').textContent=e.I.toFixed(2)+' A';
+  $('oR').textContent=S.fault?'?':(isFinite(e.R)?e.R.toFixed(1)+' Ω':'OL');$('oAT').textContent=e.AT;
+  $('oP').textContent=Math.round(S.pinsShown)+' / 20';$('oT').textContent=Math.round(S.temp)+'°C';
+  $('sw').textContent=S.on?'⏻ સ્વિચ બંધ કરો':'⏻ સ્વિચ ચાલુ કરો';$('sw').classList.toggle('on',S.on);
+  const b=$('badge');b.classList.toggle('fault',!!S.fault);
+  b.textContent=S.fault?'🩺 ફોલ્ટ મોડ – ટેસ્ટ કરી ખામી શોધો':(S.on?(e.str>0.3?'ચુંબક ચાલુ – '+(polarityRight()?'જમણો છેડો N':'ડાબો છેડો N'):'કરંટ છે, પણ ચુંબક ખૂબ નબળું'):(pinsFor(S.resid)>0?'સ્વિચ બંધ – છતાં પિન ચોંટેલી (રેસિડ્યુઅલ)':'સ્વિચ બંધ – ચુંબકત્વ નથી'));
+}
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(S.fault==='loose'){fT-=dt;if(fT<=0){S.flick=!S.flick;fT=S.flick?0.3+Math.random()*0.8:0.15+Math.random()*0.4}}
+  const e=eff();const P=e.I*e.I*(isFinite(e.R)?e.R:0);S.temp+=(30+0.625*P-S.temp)*dt*0.35;
+  if(S.on)S.lastStr=e.str;
+  draw(e,dt);updateRO(e);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+
+/* ---------- tasks (prayog) ---------- */
+const TASKS=[['on','સ્વિચ ચાલુ કરો અને પિન ચોંટતી જુઓ.'],['turns','સ્વિચ ચાલુ રાખી આંટા 450 કે વધુ કરો – વધુ પિન ઉપડશે.'],['air','કોર "હવા" પસંદ કરો – ચુંબક ખૂબ નબળું થશે.'],['rev','સ્વિચ ચાલુ રાખી કરંટ ઉલટાવો – ધ્રુવ અને કંપાસની સોય ફરશે.'],['steel','કોર "હાર્ડ સ્ટીલ" પસંદ કરો.'],['resid','સ્ટીલ કોર સાથે ચાલુ કરી પછી સ્વિચ બંધ કરો – થોડી પિન ચોંટેલી રહેશે (રેસિડ્યુઅલ મેગ્નેટિઝમ).']];
+function mark(id){if(S.tasks[id])return;S.tasks[id]=1;if(S.tab==='sim')render()}
+
+/* ---------- tests ---------- */
+function steadyTemp(e){const P=e.I*e.I*(isFinite(e.R)?e.R:0);return Math.round(30+0.625*P)}
+const TESTS=[
+ {id:'v',n:'1. સપ્લાય વોલ્ટેજ',how:'મલ્ટિમીટર DC V પર, બેટરીના + અને − પર.',norm:'નોર્મલ: 12 V (11.5–12.8 V)',run(){const e=eff(true);const ok=e.V>=11;return [e.V.toFixed(1)+' V',ok]}},
+ {id:'r',n:'2. કોઇલ રેઝિસ્ટન્સ',how:'સપ્લાય કાઢી, મલ્ટિમીટર Ω પર, કોઇલના બંને છેડે.',norm:'નોર્મલ: આશરે 6 Ω (300 આંટા)',run(){if(S.fault==='loose')return ['અસ્થિર: 6.0 Ω ↔ OL (તાર હલાવતાં બદલાય)',false];const e=eff(true);if(!isFinite(e.R))return ['OL (અનંત)',false];const n=0.02*e.N;return [e.R.toFixed(1)+' Ω',Math.abs(e.R-n)<n*0.25]}},
+ {id:'i',n:'3. કરંટ ડ્રો',how:'એમીટર સર્કિટમાં સિરીઝમાં, સ્વિચ ચાલુ.',norm:'નોર્મલ: V ÷ R = 12 ÷ 6 = 2 A',run(){const e=eff(true);const ok=e.I>1.6&&e.I<2.5;return [e.I.toFixed(2)+' A',S.fault?ok:true]}},
+ {id:'ir',n:'4. ઇન્સ્યુલેશન (કોઇલ–કોર)',how:'મેગર 500 V: એક લીડ કોઇલ પર, બીજી કોર/બોડી પર.',norm:'નોર્મલ: 1 MΩ થી વધુ (નવી કોઇલ 100 MΩ+)',run(){const e=eff(true);return [e.IR>=1?'200 MΩ થી વધુ':(e.IR*1000).toFixed(0)+' kΩ',e.IR>=1]}},
+ {id:'core',n:'5. કોર ટેસ્ટ',how:'કોઇલ કાઢી, કોર પર કાયમી ચુંબક અડાડો.',norm:'નોર્મલ: કોર ચુંબક સાથે ચોંટે (લોખંડ)',run(){const e=eff(true);return [e.c.mag?'ચોંટે છે – ચુંબકીય ધાતુ ('+e.c.n+')':'ચોંટતો નથી – અચુંબકીય ધાતુ ('+e.c.n+')',e.c.mag]}},
+ {id:'pol',n:'6. ધ્રુવ (પોલેરિટી) ટેસ્ટ',how:'સ્વિચ ચાલુ, કંપાસ જમણા છેડા પાસે.',norm:'સોયનો લાલ (N) છેડો દૂર ભાગે તો તે છેડો N',run(){const e=eff(true);if(e.str<0.3)return ['સોય હલતી નથી – ચુંબકત્વ નથી',false];return [polarityRight()?'લાલ છેડો દૂર ભાગે → જમણો છેડો N':'લાલ છેડો ખેંચાય → જમણો છેડો S',true]}},
+ {id:'lift',n:'7. લિફ્ટ (પકડ) ટેસ્ટ',how:'સ્વિચ ચાલુ, પિન/ટેસ્ટ પ્લેટ ઉપાડો.',norm:'નોર્મલ: 14 પિન આસપાસ (સોફ્ટ આયર્ન, 12 V, 300 આંટા)',run(){if(S.fault==='loose')return ['પિન ક્યારેક પકડે, ક્યારેક પડી જાય',false];const e=eff(true);const p=pinsFor(e.str);return [p+' પિન',p>=12]}},
+ {id:'res',n:'8. રેસિડ્યુઅલ ટેસ્ટ',how:'પિન ઉપાડી સ્વિચ બંધ કરો.',norm:'નોર્મલ: બધી પિન તરત છૂટી જાય',run(){const e=eff(true);const p=pinsFor(e.str*e.c.res);return [p>0?p+' પિન ચોંટેલી રહે છે':'બધી પિન છૂટી ગઈ',p===0]}},
+ {id:'heat',n:'9. ગરમી ટેસ્ટ',how:'5 મિનિટ ચલાવી કોઇલનું તાપમાન જુઓ.',norm:'નોર્મલ: 50°C થી ઓછું (હાથ રાખી શકાય)',run(){const t=steadyTemp(eff(true));return [t+'°C',t<55]}}
+];
+
+/* ---------- faults ---------- */
+const FAULTS={
+ open:{n:'કોઇલ ઓપન (તાર તૂટેલો)',sym:'સ્વિચ ચાલુ છે, બેટરી બરાબર છે, પણ ચુંબક બિલકુલ પિન ઉપાડતું નથી.',why:'રેઝિસ્ટન્સ OL અને કરંટ 0 A – કોઇલનો તાર અંદરથી તૂટેલો છે.',fix:'તૂટેલો ભાગ શોધી સોલ્ડર કરો અથવા કોઇલ ફરી વાઇન્ડ કરો.'},
+ short:{n:'શોર્ટેડ ટર્ન (આંટા ભેગા થયેલા)',sym:'ચુંબક નબળું છે અને કોઇલ ખૂબ ગરમ થાય છે; બળવાની વાસ આવે છે.',why:'રેઝિસ્ટન્સ ઘણો ઓછો (1.5 Ω), કરંટ ઘણો વધુ (8 A) – ઇનેમલ ઉખડી આંટા અંદરોઅંદર શોર્ટ થયા.',fix:'નવા ઇનેમલ્ડ કોપર તારથી કોઇલ રીવાઇન્ડ કરો; ફ્યુઝ લગાવો.'},
+ weak:{n:'નબળી બેટરી / ઓછો વોલ્ટેજ',sym:'ચુંબક નબળું છે, પણ કોઇલ ગરમ થતી નથી.',why:'સપ્લાય વોલ્ટેજ ફક્ત 3.5 V – કરંટ ઓછો, એટલે એમ્પિયર-ટર્ન ઓછા.',fix:'બેટરી ચાર્જ કરો અથવા બદલો; ટર્મિનલ સાફ કરો.'},
+ loose:{n:'ઢીલું કનેક્શન',sym:'ચુંબક ક્યારેક પકડે છે, ક્યારેક અચાનક પિન છોડી દે છે.',why:'રેઝિસ્ટન્સ 6 Ω ↔ OL વચ્ચે બદલાય – ટર્મિનલ કે જોઇન્ટ ઢીલો છે.',fix:'ટર્મિનલ સાફ કરી બરાબર કસો / સોલ્ડર કરો.'},
+ brass:{n:'ખોટો કોર (અચુંબકીય ધાતુ)',sym:'નવો કોર નાખ્યા પછી ચુંબક લગભગ કામ જ નથી કરતું, પણ કરંટ બરાબર છે.',why:'V, R, I નોર્મલ છે; કોર કાયમી ચુંબક સાથે ચોંટતો નથી – પિત્તળ જેવી અચુંબકીય ધાતુ.',fix:'સોફ્ટ આયર્નનો કોર નાખો.'},
+ leak:{n:'ઇન્સ્યુલેશન ખરાબ (કોઇલ–કોર લીકેજ)',sym:'ચુંબક બરાબર કામ કરે છે, પણ કોર/બોડી અડતાં ઝણઝણાટી લાગે છે.',why:'મેગર પર કોઇલ–કોર ઇન્સ્યુલેશન ફક્ત 50 kΩ – ઇન્સ્યુલેશન તૂટી કોઇલ બોડીને અડે છે.',fix:'ઇન્સ્યુલેશન પેપર/સ્લીવ બદલો, જરૂર હોય તો કોઇલ ફરી વાઇન્ડ કરો; બોડી અર્થ કરો.'},
+ residual:{n:'રેસિડ્યુઅલ મેગ્નેટિઝમ (સ્ટીલ કોર)',sym:'સ્વિચ બંધ કર્યા પછી પણ પિન/પ્લેટ છૂટતી નથી.',why:'કોર હાર્ડ સ્ટીલનો છે – કરંટ બંધ થયા પછી પણ ચુંબકત્વ રહી જાય.',fix:'સોફ્ટ આયર્નનો કોર વાપરો (રેસિડ્યુઅલ લગભગ શૂન્ય).'}
+};
+const FS={score:0,tries:0,log:[],answered:false};
+function newFault(){const ks=Object.keys(FAULTS);let k;do{k=ks[Math.floor(Math.random()*ks.length)]}while(k===S.fault&&ks.length>1);
+  if(!S.fault)S.saved={V:S.V,N:S.N,core:S.core};
+  S.fault=k;S.on=true;S.resid=0;S.temp=30;FS.log=[];FS.answered=false;lockUI(true);
+  $('sV').value=12;$('lV').textContent='12.0';$('sN').value=300;$('lN').textContent='300';
+  document.querySelectorAll('#cores .btn').forEach(b=>b.classList.remove('on'));render()}
+function endFault(){S.fault=null;lockUI(false);S.on=false;S.resid=0;
+  if(S.saved){S.V=S.saved.V;S.N=S.saved.N;$('sV').value=S.V;$('lV').textContent=S.V.toFixed(1);$('sN').value=S.N;$('lN').textContent=S.N;setCore(S.saved.core)}
+  render()}
+
+/* ---------- MCQ ---------- */
+const SVG_COIL='<svg viewBox="0 0 240 100" aria-label="કોઇલ આકૃતિ"><rect x="40" y="38" width="160" height="24" fill="#9aa3aa" stroke="#555"/>'+
+ Array.from({length:9},(_,i)=>{const x=56+i*16;return `<ellipse cx="${x}" cy="50" rx="3" ry="18" fill="none" stroke="#C87533" stroke-width="3"/><path d="M${x+3} 52 l-4 -7 h8z" transform="rotate(180 ${x+3} 50)" fill="#D7262E"/>`}).join('')+
+ '<text x="22" y="56" font-size="16" font-weight="700" fill="#333">A</text><text x="208" y="56" font-size="16" font-weight="700" fill="#333">B</text><text x="120" y="92" font-size="11" text-anchor="middle" fill="#555">લાલ તીર = આગળની બાજુએ કરંટ (નીચે તરફ)</text></svg>';
+const SVG_COMP='<svg viewBox="0 0 240 90" aria-label="કંપાસ આકૃતિ"><rect x="20" y="30" width="110" height="30" fill="#9aa3aa" stroke="#555"/><text x="120" y="50" font-size="15" font-weight="700" text-anchor="middle" fill="#222">X</text><circle cx="185" cy="45" r="26" fill="#fff" stroke="#555" stroke-width="2"/><path d="M161 45 L185 40 L185 50 Z" fill="#D7262E"/><path d="M209 45 L185 40 L185 50 Z" fill="#8a949c"/><text x="185" y="86" font-size="11" text-anchor="middle" fill="#555">લાલ = સોયનો N છેડો</text></svg>';
+const QZ=[
+ ['ઇલેક્ટ્રોમેગ્નેટ કયા સિદ્ધાંત પર કામ કરે છે?',['વીજ પ્રવાહની ગરમીની અસર','વીજ પ્રવાહની ચુંબકીય અસર','વીજ પ્રવાહની રાસાયણિક અસર','પ્રકાશની અસર'],1,'તારમાંથી કરંટ વહે ત્યારે તેની આસપાસ ચુંબકીય ક્ષેત્ર બને – આ જ ઇલેક્ટ્રોમેગ્નેટનો સિદ્ધાંત.'],
+ ['કરંટ વહેતા તારની આસપાસ ચુંબકીય ક્ષેત્ર બને છે તે કોણે શોધ્યું?',['ફેરાડે','ઓહમ','ઓર્સ્ટેડ','ન્યૂટન'],2,'1820 માં હાન્સ ક્રિશ્ચિયન ઓર્સ્ટેડે કંપાસની સોય ફરતી જોઈ આ શોધ કરી.'],
+ ['ઇલેક્ટ્રોમેગ્નેટના કોર માટે સૌથી યોગ્ય ધાતુ કઈ?',['સોફ્ટ આયર્ન','હાર્ડ સ્ટીલ','તાંબું','પિત્તળ'],0,'સોફ્ટ આયર્નની પરમીએબિલિટી વધુ અને રેસિડ્યુઅલ મેગ્નેટિઝમ લગભગ શૂન્ય છે.'],
+ ['કરંટ સમાન રાખી આંટા બમણા કરો તો ચુંબકની શક્તિ?',['અડધી થાય','લગભગ બમણી થાય','ચાર ગણી થાય','બદલાય નહીં'],1,'શક્તિ ∝ N × I (એમ્પિયર-ટર્ન). N બમણા → શક્તિ લગભગ બમણી (સેચ્યુરેશન પહેલાં).'],
+ ['કોઇલમાં કરંટની દિશા ઉલટાવીએ તો શું થાય?',['ચુંબકત્વ જતું રહે','ધ્રુવ (N–S) બદલાઈ જાય','શક્તિ બમણી થાય','કોઇલ શોર્ટ થાય'],1,'કરંટની દિશા બદલાય એટલે ચુંબકીય ક્ષેત્રની દિશા અને ધ્રુવ બદલાય.'],
+ ['ઇલેક્ટ્રોમેગ્નેટના ધ્રુવ શોધવા કયો નિયમ વપરાય?',['ફ્લેમિંગનો ડાબા હાથનો નિયમ','જમણા હાથનો ગ્રીપ (મુઠ્ઠી) નિયમ','લેન્ઝનો નિયમ','ઓહમનો નિયમ'],1,'આંગળીઓ કરંટની દિશામાં વાળો, તો અંગૂઠો N ધ્રુવ બતાવે.'],
+ ['ઘડિયાળના નિયમ મુજબ, છેડા સામે જોતાં કરંટ ઘડિયાળની વિરુદ્ધ દિશામાં ફરે તો તે છેડો?',['N ધ્રુવ','S ધ્રુવ','ન્યુટ્રલ','બંને'],0,'ઘડિયાળની દિશામાં (Clockwise) = S, વિરુદ્ધ દિશામાં (Anti-clockwise) = N.'],
+ ['"એમ્પિયર-ટર્ન" એટલે શું?',['V × I','N × I','I × R','N ÷ I'],1,'આંટાની સંખ્યા × કરંટ = એમ્પિયર-ટર્ન (AT); તે ચુંબકીય બળ (MMF) બતાવે.'],
+ ['200 આંટાની કોઇલમાં 3 A કરંટ હોય તો એમ્પિયર-ટર્ન કેટલા?',['67','203','600','6000'],2,'AT = N × I = 200 × 3 = 600.'],
+ ['12 V સપ્લાય અને કોઇલ રેઝિસ્ટન્સ 4 Ω હોય તો કરંટ કેટલો?',['48 A','3 A','0.33 A','16 A'],1,'ઓહમના નિયમ મુજબ I = V ÷ R = 12 ÷ 4 = 3 A.'],
+ ['મલ્ટિમીટર પર કોઇલ રેઝિસ્ટન્સ "OL" આવે તો ખામી કઈ?',['કોઇલ ઓપન (તાર તૂટેલો)','શોર્ટેડ ટર્ન','બેટરી નબળી','કોર ખોટો'],0,'OL એટલે અનંત રેઝિસ્ટન્સ – સર્કિટ તૂટેલી છે.'],
+ ['કોઇલ રેઝિસ્ટન્સ નોર્મલ કરતાં ઘણો ઓછો અને કોઇલ ખૂબ ગરમ થાય – ખામી?',['ઢીલું કનેક્શન','શોર્ટેડ ટર્ન','કોઇલ ઓપન','ખોટો કોર'],1,'આંટા અંદરોઅંદર શોર્ટ થવાથી R ઘટે, કરંટ અને ગરમી વધે, ચુંબક નબળું પડે.'],
+ ['કોઇલ અને કોર વચ્ચેનું ઇન્સ્યુલેશન ચકાસવા કયું સાધન વપરાય?',['એમીટર','મેગર (ઇન્સ્યુલેશન ટેસ્ટર)','હાઇડ્રોમીટર','ટેકોમીટર'],1,'મેગર ઊંચા વોલ્ટેજે ઇન્સ્યુલેશન રેઝિસ્ટન્સ (MΩ માં) માપે.'],
+ ['નીચેનામાંથી કયામાં ઇલેક્ટ્રોમેગ્નેટ વપરાતો નથી?',['સ્ટાર્ટર સોલેનોઇડ','ઇલેક્ટ્રિક હોર્ન','રિલે','રેડિએટર કોર'],3,'રેડિએટર ગરમી દૂર કરવાનો ભાગ છે; બાકીના ત્રણેયમાં ઇલેક્ટ્રોમેગ્નેટ છે.'],
+ ['રિલેની કોઇલ સાથે ડાયોડ (ફ્રી-વ્હીલિંગ) શા માટે લગાવાય છે?',['કરંટ વધારવા','કોઇલ બંધ થાય ત્યારે ઊંચો વોલ્ટેજ (બેક EMF) રોકવા','ચુંબક મજબૂત કરવા','ધ્રુવ બદલવા'],1,'કોઇલ બંધ થતાં ઊંચો વોલ્ટેજ પેદા થાય, જે ECU/સ્વિચ બગાડી શકે; ડાયોડ તેને શાંત કરે.'],
+ ['ઇલેક્ટ્રોમેગ્નેટની કોઇલ માટે કયો તાર વપરાય?',['ખુલ્લો એલ્યુમિનિયમ તાર','ઇનેમલ્ડ (સુપર ઇનેમલ્ડ) કોપર તાર','લોખંડનો તાર','નિક્રોમ તાર'],1,'ઇનેમલનું પાતળું પડ આંટાને એકબીજાથી અલગ (ઇન્સ્યુલેટ) રાખે છે.'],
+ ['આકૃતિમાં કોઇલની આગળની બાજુએ કરંટ નીચે તરફ વહે છે. કયો છેડો N બનશે?',['A છેડો N','B છેડો N','બંને છેડા N','કોઈ ધ્રુવ નહીં બને'],1,'જમણા હાથનો નિયમ: આગળ નીચે તરફ કરંટ → B બાજુથી જોતાં કરંટ ઘડિયાળની વિરુદ્ધ દિશામાં → B = N.',SVG_COIL],
+ ['આકૃતિમાં કંપાસની સોયનો લાલ (N) છેડો ચુંબકના X છેડા તરફ ખેંચાય છે. X છેડો કયો ધ્રુવ છે?',['N ધ્રુવ','S ધ્રુવ','ન્યુટ્રલ','કહી ન શકાય'],1,'વિરુદ્ધ ધ્રુવો આકર્ષાય: સોયનો N છેડો ખેંચાય એટલે X = S.',SVG_COMP],
+ ['સ્ટાર્ટર સોલેનોઇડમાં કઈ બે કોઇલ હોય છે?',['પ્રાઇમરી અને સેકન્ડરી','પુલ-ઇન અને હોલ્ડ-ઇન','ફિલ્ડ અને આર્મેચર','સિરીઝ અને શંટ'],1,'પુલ-ઇન કોઇલ પ્લન્જર ખેંચે, હોલ્ડ-ઇન કોઇલ તેને પકડી રાખે.'],
+ ['ઇલેક્ટ્રોમેગ્નેટ અને લોખંડની પ્લેટ વચ્ચે હવાનો ગેપ વધે તો પકડ?',['વધે','ઘટે','બદલાય નહીં','પહેલાં વધે પછી ઘટે'],1,'હવા ચુંબકીય ક્ષેત્રનો વિરોધ કરે છે; ગેપ વધે તેમ પકડ ઝડપથી ઘટે.']
+];
+const QS={ans:{},score:0};
+
+/* ---------- panels ---------- */
+const P=$('panel');
+function render(){
+  const t=S.tab;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t!=='fault'&&S.fault)endFault();
+  if(t==='sim')P.innerHTML=`<h2>🧪 પ્રયોગ કરો</h2><p>ઉપરના સિમ્યુલેટરમાં સ્વિચ, વોલ્ટેજ, આંટા અને કોર બદલો. ભૂરી રેખાઓ = ચુંબકીય ક્ષેત્ર, લાલ તીર = કોઇલમાં કરંટની દિશા, પીળા ટપકાં = સર્કિટમાં કરંટ.</p>
+   <ul class="tasks">${TASKS.map(([id,tx])=>`<li class="${S.tasks[id]?'done':''}"><i>${S.tasks[id]?'✓':''}</i><span>${tx}</span></li>`).join('')}</ul>
+   <p class="note">${Object.keys(S.tasks).length}/${TASKS.length} પ્રયોગ પૂરા. બધું પૂરું થાય એટલે "ટેસ્ટ" અને "ફોલ્ટ ફાઇન્ડિંગ" અજમાવો.</p>
+   <div class="key"><b>ધ્યાનથી જુઓ:</b> આંટા કે વોલ્ટેજ વધારો તો એમ્પિયર-ટર્ન (N × I) વધે અને વધુ પિન ઉપડે. પણ સોફ્ટ આયર્ન એક હદ પછી "સેચ્યુરેટ" થાય – પછી શક્તિ ખાસ વધતી નથી.</div>`;
+  if(t==='prin')P.innerHTML=`<h2>💡 ઇલેક્ટ્રોમેગ્નેટનો સિદ્ધાંત</h2>
+   <div class="formula">વીજ પ્રવાહ → ચુંબકીય ક્ષેત્ર  (કરંટની ચુંબકીય અસર)</div>
+   <p>કોઈ પણ તારમાંથી વીજ પ્રવાહ (કરંટ) વહે ત્યારે તેની આસપાસ ગોળ ચુંબકીય ક્ષેત્ર બને છે. આ તારને લોખંડના કોર પર કોઇલ રૂપે વીંટીએ તો બધા આંટાનું ક્ષેત્ર ભેગું થાય અને કોર મજબૂત ચુંબક બની જાય. કરંટ બંધ કરો એટલે ચુંબકત્વ જતું રહે. આવા "સ્વિચથી ચાલુ-બંધ થતા" ચુંબકને <b>ઇલેક્ટ્રોમેગ્નેટ</b> કહે છે.</p>
+   <h3>4 પગલાંમાં સમજો</h3>
+   <ol class="l"><li><b>સીધો તાર:</b> કરંટ વહે → તારની ફરતે ગોળ ચુંબકીય રેખાઓ (ઓર્સ્ટેડનો પ્રયોગ, 1820).</li>
+   <li><b>કોઇલ (સોલેનોઇડ):</b> તારને ગોળ વીંટો → દરેક આંટાનું ક્ષેત્ર એક જ દિશામાં ભેગું થાય; કોઇલ સળિયા જેવા ચુંબક જેવી બને.</li>
+   <li><b>સોફ્ટ આયર્ન કોર:</b> કોરની અંદરના નાના "ડોમેઇન" (નાના ચુંબક) એક દિશામાં ગોઠવાઈ જાય → ક્ષેત્ર સેંકડો ગણું વધે.</li>
+   <li><b>કરંટ બંધ:</b> ડોમેઇન ફરી વિખેરાઈ જાય → ચુંબકત્વ જતું રહે (સોફ્ટ આયર્નમાં લગભગ પૂરેપૂરું).</li></ol>
+   <h3>ચુંબકની શક્તિ</h3>
+   <div class="formula">ચુંબકીય બળ (MMF) = N × I  (એમ્પિયર-ટર્ન)<br>B = μ × N × I ÷ l</div>
+   <p class="note">N = આંટા, I = કરંટ (A), μ = કોરની પરમીએબિલિટી, l = કોઇલની લંબાઈ. એટલે આંટા વધારો, કરંટ વધારો કે સારો કોર વાપરો તો ચુંબક મજબૂત બને.</p>
+   <h3>ધ્રુવ કેવી રીતે ઓળખવા?</h3>
+   <div class="key"><b>જમણા હાથનો ગ્રીપ નિયમ:</b> કોઇલને જમણા હાથથી એવી રીતે પકડો કે આંગળીઓ કરંટની દિશામાં વળે – તો અંગૂઠો N ધ્રુવ બતાવે.</div>
+   <div class="key"><b>ઘડિયાળનો નિયમ:</b> છેડા સામે જોતાં કરંટ ઘડિયાળની દિશામાં ફરે તો S, વિરુદ્ધ દિશામાં ફરે તો N.</div>
+   <p>ઉપરના સિમ્યુલેટરમાં "કરંટ ઉલટાવો" દબાવી ધ્રુવ અને કંપાસની સોય બદલાતી જુઓ.</p>`;
+  if(t==='test')P.innerHTML=`<h2>🔧 ઇલેક્ટ્રોમેગ્નેટના ટેસ્ટ</h2><p>દરેક ટેસ્ટ ઉપરના સિમ્યુલેટરની હાલની સેટિંગ પર થશે (12 V, 300 આંટા, સોફ્ટ આયર્ન = નોર્મલ). "ટેસ્ટ કરો" દબાવો અને નોર્મલ વેલ્યુ સાથે સરખાવો.</p>
+   <div class="tests">${TESTS.map(x=>`<div class="test"><b class="t">${x.n}</b><span class="how">${x.how}</span><span class="note">${x.norm}</span><button class="btn acc" data-test="${x.id}">ટેસ્ટ કરો</button><div class="read" id="rd_${x.id}">—</div></div>`).join('')}</div>
+   <div class="warnb"><b>⚠️ સલામતી:</b> રેઝિસ્ટન્સ અને મેગર ટેસ્ટ હંમેશા સપ્લાય કાઢીને જ કરો. મેગરનો ઊંચો વોલ્ટેજ ઇલેક્ટ્રોનિક ભાગ (ECU, ડાયોડ) સાથે જોડાયેલો હોય ત્યારે ન લગાવો.</div>`;
+  if(t==='fault'){
+    if(!S.fault){P.innerHTML=`<h2>🩺 ફોલ્ટ ફાઇન્ડિંગ</h2><p>સિમ્યુલેટરમાં એક છુપી ખામી નાખવામાં આવશે. ફરિયાદ વાંચો, જરૂરી ટેસ્ટ કરો અને ખામી ઓળખો. ફોલ્ટ મોડમાં વોલ્ટેજ, આંટા અને કોર લૉક રહેશે; સ્વિચ ચાલુ-બંધ કરી શકશો.</p>
+      <div class="score"><span>✅ સાચા: <b>${FS.score} / ${FS.tries}</b></span></div>
+      <p><button class="btn acc" id="startF">▶ નવો ફોલ્ટ શરૂ કરો</button></p>
+      <h3>ફોલ્ટ શોધવાની રીત</h3><ol class="l"><li>ફરિયાદ ધ્યાનથી વાંચો: ચુંબક બિલકુલ નથી? નબળું છે? ગરમ થાય છે? ક્યારેક જ કામ કરે છે?</li><li>પહેલાં સપ્લાય વોલ્ટેજ, પછી કોઇલ રેઝિસ્ટન્સ અને કરંટ ચકાસો.</li><li>વિદ્યુત બાજુ બરાબર હોય તો કોર, ઇન્સ્યુલેશન અને રેસિડ્યુઅલ ચકાસો.</li><li>બધું મળીને જ નિર્ણય લો – એક જ રીડિંગ પરથી નહીં.</li></ol>`;}
+    else{const F=FAULTS[S.fault];P.innerHTML=`<h2>🩺 ફરિયાદ</h2><div class="warnb">🚗 "${F.sym}"</div>
+      <h3>ટેસ્ટ કરો</h3><div class="row">${TESTS.map(x=>`<button class="btn" data-ft="${x.id}">${x.n.replace(/^\d+\. /,'')}</button>`).join('')}</div>
+      <h3>રીડિંગ લૉગ</h3><div class="log" id="flog">${FS.log.length?FS.log.map(l=>`<div>${l}</div>`).join(''):'<div class="note">હજી કોઈ ટેસ્ટ કર્યો નથી.</div>'}</div>
+      <h3>ખામી કઈ છે?</h3><div class="opts" id="fopts">${Object.entries(FAULTS).map(([k,f])=>`<button data-fk="${k}">${f.n}</button>`).join('')}</div><div id="fres"></div>
+      <div class="row"><button class="btn acc" id="nextF">↻ નવો ફોલ્ટ</button><button class="btn" id="stopF">✕ ફોલ્ટ મોડ બંધ</button></div>
+      <div class="score" style="margin-top:8px"><span>✅ સાચા: <b>${FS.score} / ${FS.tries}</b></span></div>`;}
+  }
+  if(t==='mcq')P.innerHTML=`<h2>📝 MCQ – ઇલેક્ટ્રોમેગ્નેટ (${QZ.length} પ્રશ્ન)</h2><div class="score"><span>✅ સાચા: <b id="qsc">${QS.score} / ${Object.keys(QS.ans).length}</b></span><button class="btn" id="qreset">↻ ફરી શરૂ</button></div>
+   ${QZ.map((q,i)=>`<div class="qq" data-q="${i}"><p class="q">${i+1}. ${q[0]}</p>${q[4]||''}<div class="opts">${q[1].map((o,j)=>{const a=QS.ans[i];const cls=a===undefined?'':(j===q[2]?'r':(j===a?'w':''));return `<button data-j="${j}" class="${cls}">${'કખગઘ'[j]}. ${o}</button>`}).join('')}</div>${QS.ans[i]!==undefined?`<div class="why">${QS.ans[i]===q[2]?'✅ સાચું! ':'❌ ખોટું. '}${q[3]}</div>`:''}</div>`).join('')}`;
+  if(t==='theory')P.innerHTML=THEORY;
+  bind();
+}
+function bind(){
+  P.querySelectorAll('[data-test]').forEach(b=>b.onclick=()=>{const x=TESTS.find(y=>y.id===b.dataset.test);const [r,ok]=x.run();const el=$('rd_'+x.id);el.textContent=(ok?'✅ ':'❌ ')+r;el.className='read '+(ok?'ok':'bad')});
+  const sf=$('startF');if(sf)sf.onclick=newFault;
+  const nf=$('nextF');if(nf)nf.onclick=newFault;const st=$('stopF');if(st)st.onclick=endFault;
+  P.querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{const x=TESTS.find(y=>y.id===b.dataset.ft);const [r,ok]=x.run();FS.log.push(`<b>${x.n.replace(/^\d+\. /,'')}:</b> ${r} <span class="note">(${x.norm})</span>`);render()});
+  P.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{if(FS.answered)return;FS.answered=true;FS.tries++;const k=b.dataset.fk,ok=k===S.fault;if(ok)FS.score++;const F=FAULTS[S.fault];
+    P.querySelectorAll('[data-fk]').forEach(x=>{if(x.dataset.fk===S.fault)x.classList.add('r');else if(x===b)x.classList.add('w')});
+    $('fres').innerHTML=`<div class="result ${ok?'ok':'bad'}">${ok?'✅ સાચું નિદાન!':'❌ ખોટું. સાચી ખામી: '+F.n}<br><span style="font-weight:400">કારણ: ${F.why}<br>ઉપાય: ${F.fix}</span></div>`;
+    P.querySelectorAll('.score b').forEach(s=>s.textContent=FS.score+' / '+FS.tries)});
+  P.querySelectorAll('.qq').forEach(qq=>{const i=+qq.dataset.q;qq.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(QS.ans[i]!==undefined)return;const j=+b.dataset.j;QS.ans[i]=j;if(j===QZ[i][2])QS.score++;const y=window.scrollY;render();window.scrollTo(0,y)})});
+  const qr=$('qreset');if(qr)qr.onclick=()=>{QS.ans={};QS.score=0;render()};
+  P.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const el=$(b.dataset.go);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})});
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;render()});
+
+const THEORY=`<h2>📘 ઇલેક્ટ્રોમેગ્નેટ – પૂરી થિયરી</h2>
+<div class="row">${[['th1','વ્યાખ્યા'],['th2','રચના'],['th3','શક્તિનાં પરિબળ'],['th4','ધ્રુવ'],['th5','કોર ધાતુ'],['th6','સરખામણી'],['th7','ઓટોમોબાઇલમાં ઉપયોગ'],['th8','સામાન્ય ખામી'],['th9','સલામતી']].map((x,i)=>`<button class="btn" data-go="${x[0]}">${i+1}. ${x[1]}</button>`).join('')}</div>
+<h3 id="th1">1. ઇલેક્ટ્રોમેગ્નેટ એટલે શું?</h3>
+<p>નરમ લોખંડ (સોફ્ટ આયર્ન) ના કોર પર ઇન્સ્યુલેટેડ તાંબાના તારની કોઇલ વીંટી, તેમાંથી DC કરંટ પસાર કરતાં જે કામચલાઉ ચુંબક બને તેને <b>ઇલેક્ટ્રોમેગ્નેટ (વિદ્યુત ચુંબક)</b> કહે છે. કરંટ ચાલુ હોય ત્યાં સુધી જ તે ચુંબક રહે છે.</p>
+<h3 id="th2">2. રચના (ભાગો)</h3>
+<div class="tbl"><table><tr><th>ભાગ</th><th>કાર્ય</th></tr>
+<tr><td>સોફ્ટ આયર્ન કોર</td><td>ચુંબકીય રેખાઓને કેન્દ્રિત કરી ક્ષેત્ર સેંકડો ગણું વધારે.</td></tr>
+<tr><td>કોઇલ (ઇનેમલ્ડ કોપર તાર)</td><td>કરંટ વહન કરી ચુંબકીય ક્ષેત્ર બનાવે; ઇનેમલ આંટાને અલગ રાખે.</td></tr>
+<tr><td>બોબિન / ઇન્સ્યુલેશન</td><td>કોઇલને કોરથી ઇન્સ્યુલેટ કરે અને આકાર આપે.</td></tr>
+<tr><td>DC સપ્લાય (બેટરી)</td><td>કોઇલને કરંટ આપે.</td></tr>
+<tr><td>સ્વિચ / રિલે</td><td>ચુંબકને ચાલુ-બંધ કરે.</td></tr>
+<tr><td>ફ્યુઝ</td><td>શોર્ટ થાય તો સર્કિટ બચાવે.</td></tr></table></div>
+<h3 id="th3">3. ચુંબકની શક્તિ કયા પરિબળો પર આધાર રાખે?</h3>
+<ul class="l"><li><b>આંટાની સંખ્યા (N):</b> વધુ આંટા → વધુ શક્તિ.</li><li><b>કરંટ (I):</b> વધુ કરંટ → વધુ શક્તિ (પણ ગરમી પણ વધે, P = I²R).</li><li><b>કોરની ધાતુ:</b> સોફ્ટ આયર્ન શ્રેષ્ઠ; હવા/પિત્તળ/એલ્યુમિનિયમ કોરથી ચુંબક ખૂબ નબળું.</li><li><b>હવાનો ગેપ:</b> કોર અને જોબ વચ્ચે ગેપ વધે તેમ પકડ ઝડપથી ઘટે.</li><li><b>કોરનો આકાર:</b> U (ઘોડાની નાળ) આકારમાં બંને ધ્રુવ એક સાથે પકડે, એટલે વધુ પકડ.</li><li><b>સેચ્યુરેશન:</b> એક હદ પછી કોર "ભરાઈ" જાય, પછી કરંટ વધારવાથી શક્તિ ખાસ ન વધે.</li></ul>
+<div class="formula">MMF = N × I (AT)   |   I = V ÷ R   |   ગરમી P = I² × R</div>
+<p class="note">ઉદાહરણ: 300 આંટા, 12 V, R = 6 Ω → I = 2 A → MMF = 600 AT, ગરમી = 2² × 6 = 24 W.</p>
+<h3 id="th4">4. ધ્રુવ (Polarity) ઓળખવાના નિયમ</h3>
+<ul class="l"><li><b>જમણા હાથનો ગ્રીપ નિયમ:</b> આંગળીઓ કરંટની દિશામાં → અંગૂઠો N તરફ.</li><li><b>ઘડિયાળનો (એન્ડ) નિયમ:</b> છેડા સામે જોતાં Clockwise = S, Anti-clockwise = N.</li><li><b>કંપાસ:</b> સોયનો N છેડો દૂર ભાગે તો તે છેડો N; ખેંચાય તો S.</li><li>કરંટની દિશા કે વાઇન્ડિંગની દિશા બદલો તો ધ્રુવ બદલાય.</li></ul>
+<h3 id="th5">5. કોર માટેની ધાતુ</h3>
+<div class="tbl"><table><tr><th>ધાતુ</th><th>પરમીએબિલિટી</th><th>રેસિડ્યુઅલ</th><th>ઉપયોગ</th></tr>
+<tr><td>સોફ્ટ આયર્ન</td><td>ખૂબ વધુ</td><td>લગભગ શૂન્ય</td><td>ઇલેક્ટ્રોમેગ્નેટ, રિલે, સોલેનોઇડ</td></tr>
+<tr><td>સિલિકોન સ્ટીલ (લેમિનેટેડ)</td><td>વધુ</td><td>ઓછું</td><td>AC કોઇલ, ટ્રાન્સફોર્મર (એડી કરંટ ઘટાડે)</td></tr>
+<tr><td>હાર્ડ સ્ટીલ</td><td>મધ્યમ</td><td>વધુ</td><td>કાયમી ચુંબક (ઇલેક્ટ્રોમેગ્નેટ માટે નહીં)</td></tr>
+<tr><td>પિત્તળ, તાંબું, એલ્યુમિનિયમ</td><td>હવા જેટલી</td><td>–</td><td>અચુંબકીય – કોર માટે નકામા</td></tr></table></div>
+<div class="key"><b>રેસિડ્યુઅલ મેગ્નેટિઝમ:</b> કરંટ બંધ થયા પછી કોરમાં બાકી રહેતું ચુંબકત્વ. સ્ટીલ કોરમાં વધુ હોય, એટલે રિલે-સોલેનોઇડ છૂટે નહીં. આ નુકસાનને "હિસ્ટેરેસિસ" સાથે જોડાયેલું ગણાય.</div>
+<h3 id="th6">6. ઇલેક્ટ્રોમેગ્નેટ vs કાયમી ચુંબક</h3>
+<div class="tbl"><table><tr><th>મુદ્દો</th><th>ઇલેક્ટ્રોમેગ્નેટ</th><th>કાયમી ચુંબક</th></tr>
+<tr><td>ચુંબકત્વ</td><td>કામચલાઉ (કરંટ હોય ત્યાં સુધી)</td><td>કાયમી</td></tr>
+<tr><td>શક્તિ</td><td>બદલી શકાય (N, I)</td><td>નિશ્ચિત</td></tr>
+<tr><td>ધ્રુવ</td><td>કરંટ ઉલટાવી બદલી શકાય</td><td>નિશ્ચિત</td></tr>
+<tr><td>ચાલુ-બંધ</td><td>સ્વિચથી</td><td>ન થઈ શકે</td></tr>
+<tr><td>પાવર</td><td>વીજળી જોઈએ</td><td>વીજળી ન જોઈએ</td></tr>
+<tr><td>કોર</td><td>સોફ્ટ આયર્ન</td><td>હાર્ડ સ્ટીલ, ફેરાઇટ, નિઓડિમિયમ</td></tr></table></div>
+<h3 id="th7">7. ઓટોમોબાઇલમાં ઉપયોગ</h3>
+<ul class="l"><li><b>સ્ટાર્ટર સોલેનોઇડ:</b> પુલ-ઇન અને હોલ્ડ-ઇન કોઇલ પ્લન્જર ખેંચી પિનિયનને ફ્લાયવ્હીલ સાથે જોડે અને મોટરનો મેઇન સ્વિચ બંધ કરે.</li>
+<li><b>રિલે:</b> ઓછા કરંટની કોઇલથી હેડલાઇટ, હોર્ન, ફ્યુઅલ પંપ જેવા વધુ કરંટના સર્કિટ ચાલુ-બંધ કરે.</li>
+<li><b>ઇલેક્ટ્રિક હોર્ન:</b> ઇલેક્ટ્રોમેગ્નેટ ડાયાફ્રામ ખેંચે-છોડે, અવાજ પેદા થાય.</li>
+<li><b>ઇન્જેક્ટર (CRDI/MPFI):</b> સોલેનોઇડ કોઇલ નીડલ ઉઠાવી ફ્યુઅલ છાંટે.</li>
+<li><b>ઓલ્ટરનેટરનો રોટર:</b> ફિલ્ડ કોઇલ ઇલેક્ટ્રોમેગ્નેટ બનાવી વીજળી ઉત્પન્ન કરે.</li>
+<li><b>AC કોમ્પ્રેસરનો મેગ્નેટિક ક્લચ, ABS વાલ્વ, ડોર લૉક એક્ચ્યુએટર, EGR/પર્જ વાલ્વ.</b></li>
+<li>વર્કશોપમાં: મેગ્નેટિક ક્રેન, ઇલેક્ટ્રિક બેલ, મેગ્નેટિક ચક.</li></ul>
+<h3 id="th8">8. સામાન્ય ખામી, લક્ષણ અને ઉપાય</h3>
+<div class="tbl"><table><tr><th>ખામી</th><th>લક્ષણ / રીડિંગ</th><th>ઉપાય</th></tr>
+${Object.values(FAULTS).map(f=>`<tr><td>${f.n}</td><td>${f.why}</td><td>${f.fix}</td></tr>`).join('')}</table></div>
+<h3 id="th9">9. સલામતી અને સાવચેતી</h3>
+<ul class="l"><li>કોઇલ બંધ કરતી વખતે ઊંચો વોલ્ટેજ (બેક EMF) પેદા થાય – ઝટકો લાગી શકે; કોઇલ સાથે ડાયોડ લગાવો.</li><li>લાંબો સમય ચાલુ રાખવાથી કોઇલ ગરમ થાય; રેટેડ વોલ્ટેજ જ આપો.</li><li>સર્કિટમાં ફ્યુઝ રાખો.</li><li>મજબૂત ચુંબક પાસે ઘડિયાળ, મોબાઇલ, કાર્ડ ન રાખો; આંગળી વચ્ચે ન આવે તેનું ધ્યાન રાખો.</li><li>રેઝિસ્ટન્સ/મેગર ટેસ્ટ સપ્લાય કાઢીને જ કરો.</li></ul>`;
+
+render();
+})();
+</script>
+</body>
+</html>
